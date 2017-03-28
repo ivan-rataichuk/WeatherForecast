@@ -1,0 +1,118 @@
+﻿<Window x:Class="WeatherForecast.View.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:WeatherForecast.View"
+        xmlns:vm="clr-namespace:WeatherForecast.ViewModel"
+        xmlns:ent="clr-namespace:WeatherForecast.Model.Entities"
+        mc:Ignorable="d"
+        Name="Main"
+        Title="MainWindow" Height="435.073" Width="631.579">
+    <Window.DataContext>
+        <vm:MainPageViewModel />
+    </Window.DataContext>
+
+    <Grid x:Name="root">
+        <TextBox x:Name="searchBox" Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Left" Height="23" Margin="33,25,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="150"/>
+
+        <Popup PlacementTarget="{Binding ElementName=searchBox}" Placement="Bottom" IsOpen="{Binding ElementName=searchBox, Path=IsFocused, Mode=OneWay}">
+            <Popup.Resources>
+                <CollectionViewSource x:Key="GroupedSearchResults" Source="{Binding SearchResults}">
+                    <CollectionViewSource.GroupDescriptions>
+                        <PropertyGroupDescription PropertyName="country" />
+                    </CollectionViewSource.GroupDescriptions>
+                </CollectionViewSource>
+            </Popup.Resources>
+            <ListView ItemsSource="{Binding Source={StaticResource GroupedSearchResults}}" SelectedItem="{Binding SelectedResult}" Width="150">
+                <ListView.Resources>
+                    <DataTemplate x:Key="GroupingHeader">
+                        <TextBlock Text="{Binding Path=Name}" Background="AliceBlue" FontWeight="SemiBold" FontSize="14" />
+                    </DataTemplate>
+                    <DataTemplate DataType="{x:Type ent:City}">
+                        <StackPanel>
+                            <TextBlock Text="{Binding name}" />
+                        </StackPanel>
+                    </DataTemplate>
+                </ListView.Resources>
+                <ListBox.GroupStyle>
+                    <GroupStyle HeaderTemplate="{StaticResource ResourceKey=GroupingHeader}" HidesIfEmpty="False" />
+                </ListBox.GroupStyle>
+            </ListView>
+        </Popup>
+
+        <Button x:Name="button" Content="Add City" Command="{Binding AddCityCommand}" CommandParameter="{Binding Text, ElementName=searchBox}" HorizontalAlignment="Left" Margin="188,25,0,0" VerticalAlignment="Top" Width="75" Height="23"/>
+
+        <ListBox HorizontalContentAlignment="Stretch" x:Name="favoredCities" ItemsSource="{Binding FavoredCities}" HorizontalAlignment="Left" Height="319" Margin="33,57,0,0" VerticalAlignment="Top" Width="150">
+            <ListBox.ItemTemplate>
+                <DataTemplate>
+                    <Grid Margin="0,2">
+
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+
+                        <TextBlock Grid.Column="0" Text="{Binding name}" x:Name="currentCity">
+                            <TextBlock.InputBindings>
+                                <MouseBinding MouseAction="LeftDoubleClick" Command="{Binding RelativeSource={RelativeSource AncestorType=ItemsControl},
+                             Path=DataContext.GetWeatherCommand}"
+                                      CommandParameter="{Binding .}"/>
+                            </TextBlock.InputBindings>
+                        </TextBlock>
+                        <Button Grid.Column="1" Content="Delete" DataContext="{Binding ElementName=Main , Path=DataContext }" 
+                                CommandParameter="{Binding ElementName=currentCity,Path=DataContext}" Command="{Binding DeleteCityCommand}" HorizontalAlignment="Right"/>
+                    </Grid>
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+        </ListBox>
+        <Rectangle Fill="#FFF4F4F5" HorizontalAlignment="Left" Height="92" Margin="203,60,0,0" Stroke="Black" VerticalAlignment="Top" Width="400"/>
+        <Label x:Name="label" Content="Current Weather" HorizontalAlignment="Left" Margin="355,65,0,0" VerticalAlignment="Top"/>
+        <Label x:Name="label1" Content="Temperature C&#186; : " HorizontalAlignment="Left" Margin="212,91,0,0" VerticalAlignment="Top"/>
+        <Label x:Name="tempLabel" Content="{Binding Weather.MainParameters.Temperature}" HorizontalAlignment="Left" Margin="314,90,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.533,0.4" Height="26"/>
+        <Label x:Name="label2" Content="Pressure mmHg:" HorizontalAlignment="Left" Margin="355,91,0,0" VerticalAlignment="Top"/>
+        <Label x:Name="pressureLabel" Content="{Binding Weather.MainParameters.Pressure}" HorizontalAlignment="Left" Margin="457,91,0,0" VerticalAlignment="Top" Height="25"/>
+        <Label x:Name="label4" Content="Wind m/s:" HorizontalAlignment="Left" Margin="494,91,0,0" VerticalAlignment="Top"/>
+        <Label x:Name="windLabel" Content="{Binding Weather.Wind.Speed}" HorizontalAlignment="Left" Margin="563,91,0,0" VerticalAlignment="Top" Height="25"/>
+        <Label x:Name="label3" Content="Description:" HorizontalAlignment="Left" Margin="212,117,0,0" VerticalAlignment="Top"/>
+        <Label x:Name="descriptionLabel" Content="{Binding Weather.Weather.Description}" HorizontalAlignment="Left" Margin="285,117,0,0" VerticalAlignment="Top" Height="26"/>
+
+        <Grid HorizontalAlignment="Left" Height="29" Margin="203,163,0,0" VerticalAlignment="Top" Width="400">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="80" />
+                <ColumnDefinition Width="80" />
+                <ColumnDefinition Width="80" />
+                <ColumnDefinition Width="80" />
+                <ColumnDefinition Width="80" />
+            </Grid.ColumnDefinitions>
+
+            <Button x:Name="button1" Grid.Column="0" Content="Today" CommandParameter="{Binding Days[0]}" Command="{Binding SelectForecastCommand}" HorizontalAlignment="Center" VerticalAlignment="Center" Width="75" Height="19"/>
+            <Button x:Name="button2" Grid.Column="1" Content="{Binding Days[1]}" CommandParameter="{Binding Days[1]}" Command="{Binding SelectForecastCommand}" HorizontalAlignment="Center" VerticalAlignment="Center" Width="75" Height="19"/>
+            <Button x:Name="button3" Grid.Column="2" Content="{Binding Days[2]}" CommandParameter="{Binding Days[2]}" Command="{Binding SelectForecastCommand}" HorizontalAlignment="Center" VerticalAlignment="Center" Width="75" Height="19"/>
+            <Button x:Name="button4" Grid.Column="3" Content="{Binding Days[3]}" CommandParameter="{Binding Days[3]}" Command="{Binding SelectForecastCommand}" HorizontalAlignment="Center" VerticalAlignment="Center" Width="75" Height="19"/>
+            <Button x:Name="button5" Grid.Column="4" Content="{Binding Days[4]}" CommandParameter="{Binding Days[4]}" Command="{Binding SelectForecastCommand}" HorizontalAlignment="Center" VerticalAlignment="Center" Width="75" Height="19"/>
+        </Grid>
+
+        <ListBox x:Name="forecastListBox" HorizontalContentAlignment="Stretch" ItemsSource="{Binding Forecast}" HorizontalAlignment="Left" Height="179" Margin="203,197,0,0" VerticalAlignment="Top" Width="400">
+            <ListBox.ItemTemplate>
+                <DataTemplate>
+                    <Grid Margin="0,2">
+
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="100" />
+                            <ColumnDefinition Width="100" />
+                            <ColumnDefinition Width="100" />
+                            <ColumnDefinition Width="50" />
+                        </Grid.ColumnDefinitions>
+
+                        <TextBlock Grid.Column="0" Text="{Binding TimeOfForecast.TimeOfDay}" Margin="1,1,1,1"/>
+                        <TextBlock Grid.Column="1" Text="{Binding Weather.Description}" Margin="1,1,1,1"/>
+                        <TextBlock Grid.Column="2" Text="{Binding MainParameters.Temperature}" TextAlignment="Right" Margin="1,1,1,1"/>
+                        <TextBlock Grid.Column="3" Text="C&#186;" Margin="1,1,1,1"/>
+
+                    </Grid>
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+        </ListBox>
+    </Grid>
+</Window>

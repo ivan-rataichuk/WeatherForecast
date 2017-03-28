@@ -1,0 +1,8 @@
+2017-03-28 15:41:27,236 [8] INFO  WeatherForecast.Model.ForecastService - Test
+2017-03-28 15:41:41,802 [8] INFO  WeatherForecast.Model.ForecastService - Test
+2017-03-28 15:48:25,526 [1] INFO  WeatherForecast.Model.ForecastService - Test
+2017-03-28 15:48:45,928 [1] INFO  WeatherForecast.Model.ForecastService - Test
+2017-03-28 15:48:47,843 [1] INFO  WeatherForecast.Model.ForecastService - Test
+2017-03-28 15:48:49,313 [1] INFO  WeatherForecast.Model.ForecastService - Test
+2017-03-28 15:48:53,480 [1] INFO  WeatherForecast.Model.ForecastService - Test
+2017-03-28 15:48:56,760 [1] INFO  WeatherForecast.Model.ForecastService - Test
